@@ -19,4 +19,6 @@ Raw data was obtained from https://www.kaggle.com/datasets/joebeachcapital/top-1
 
 - Test if having the "indie" label cause any statistical significance.
 
+- Test if having MAc support cause any statistical significance lmao.
+
 - Write my own data scrapper.
