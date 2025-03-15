@@ -11,6 +11,10 @@ Raw data was obtained from https://www.kaggle.com/datasets/joebeachcapital/top-1
 
 - Clean the data to avoid games that have demo / Playtest in the name. Clean games with too little players.
 
+- Explain the process I used to clean the data (DO THIS FIRST!)
+
+- Explain the things I did for data normalization
+
 - Do linear regression for a first model
 
 - Investigate how the linear regression model can be improved
