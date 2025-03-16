@@ -71,6 +71,17 @@ The last two fields are what we will consider the "output" of our prediction mod
 
 # Data normalization
 
+First we do some changes of variables so training is less sensible to scale. This is all pretty standard.
+
+First note that both our predicted outputs have a pretty obvious power law. Hence, we will change them to a log scale before making predictions. Same applies to Prices, Positive and negative reviews.
+Number of categories follows a power law distribution (ignoring values with only 1 catergory). I will adjust them to log scale. Number of langauges follows a power-law distribution, with some outliers at 29 and 103 (most likely automatic filling of some languages / obvious limit set by translation companies). Again, we take log of this numbers. 
+
+Number of genres follow a gaussian-ish distribution, so we normalize them by replacing them by their Z-score.
+
+Number of tags, funny enough, follow a distribution bounded between 1 and 20, which a pretty heavy weight to 20. I will re-adjustem them to 0 to 1.
+
+The genre is remapped to a one-shot vector.
+
 # Linear regression
 
 # Hypothesis testing
@@ -81,6 +92,8 @@ To improve this analysis in the future I plan to do the following:
 
 - Use my own data scrapper. While the data we used contained a bunch of information, it also contains a big number
 of data not filled correctly (in particular, estimated owners for a big number for games is just missing).
+
+- Get a better genre classification. Steam one is really barebones at best.
 
 - Include other fields for my analysis. Do number of screenshots and movies affect the sales? I would say they do,
 but companies that can include more screenshots and trailer tend to have a bigger marketing team, hence more budget for marketing,

@@ -47,6 +47,17 @@ class DataCleaner:
 		"Screenshots": "str",
 		"Movies" : "str",
 	}
+	valid_genres = [
+		"Action",
+		"Adventure",
+		"Casual",
+		"Indie",
+		"Simulation",
+		"RPG",
+		"Strategy",
+		"Racing",
+		"Sports",
+	]
 
 	def __init__(self, print_level: int):
 		self.logger = Logger(print_level)
@@ -69,6 +80,7 @@ class DataCleaner:
 		self.add_number_tags_data()
 		self.add_is_indie_genre_data()
 		self.add_is_indie_tag_data()
+		self.add_numbers_of_languages_data()
 		self.add_days_since_release_day_data()
 		self.add_average_owners_per_day()
 		self.add_estimated_lifetime_owners_data()
@@ -125,6 +137,11 @@ class DataCleaner:
 		for i in range(0,len(genre_column)):
 			genres = str(genre_column[i])
 			main_genre = genres.split(",")[0]
+
+			#clean some less dominant genres. The ones we used are given by the valid_genres array
+			if (not main_genre in self.valid_genres):
+				main_genre = "Other"
+			
 			main_genres.append(main_genre)
 
 		dataframe["Main Genre"] = main_genres
