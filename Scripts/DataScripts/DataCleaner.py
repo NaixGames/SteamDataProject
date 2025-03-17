@@ -4,6 +4,7 @@ from datetime import datetime
 import sys
 sys.path.append("D:/Github/SteamDataProject/Scripts/UtilScripts")
 from Logger import Logger
+from DataSaver import save_data
 
 class DataCleaner:
 	dtype_dict = {
@@ -84,10 +85,7 @@ class DataCleaner:
 		self.add_days_since_release_day_data()
 		self.add_average_owners_per_day()
 		self.add_estimated_lifetime_owners_data()
-		self.save_cleaned_data(write_path)
-
-		##At some point I need to normalize values, but I will do so in a different script
-		## make this part of a data pipeline, in which a call the cleaner and the normalizer
+		save_data(self.dataframe, write_path, 1)
 
 
 	def drop_unwanted_columns(self) -> None:
@@ -275,27 +273,4 @@ class DataCleaner:
 		dataframe["Number languages"] = number_lang
 		self.dataframe = dataframe
 
-	def save_cleaned_data(self, write_path: str) -> None:
-		self.logger.log_message("Writting cleaned data", 1)
-		self.dataframe.to_csv(
-			path_or_buf=write_path,
-			sep=',',
-			na_rep='',
-			header=True,
-			index=True,
-			index_label=None,
-			mode='w',
-			storage_options={},
-			compression='infer',
-			chunksize=None,
-			date_format=None,
-			doublequote=True,
-			escapechar=None,
-			decimal='.',
-			errors='strict'
-		)
-
-		self.logger.log_message("Cleaned data generated correctly at " + write_path, 1)
-
-	
 

@@ -1,16 +1,19 @@
 from DataCleaner import DataCleaner
 from DataPlotter import DataPlotter
 from DataNormalizer import DataNormalizer
+from DataShuffler import DataShuffler
 
 #Params
 data_read_path = "../../Data/93182_steam_games.csv"
 clean_data_write_path = "../../Data/cleaned_data.csv"
 normalized_data_write_path = "../../Data/normalized_data.csv"
+shuffle_data_write_path = "../../Data/shuffled_data.csv"
 print_level = 2
 generate_clean_data = False
 plot_clean_data = False
-normalized_data = True
-plot_normalized_data = True
+normalized_data = False
+plot_normalized_data = False
+shuffle_data = True
 
 
 if (generate_clean_data):
@@ -33,5 +36,7 @@ if (plot_normalized_data):
 	plotter.plot_data(normalized_data_write_path)
 
 
-#randomize data order
+if (shuffle_data):
+	shuffler = DataShuffler(print_level)
+	shuffler.shuffle_data(normalized_data_write_path, shuffle_data_write_path)
 

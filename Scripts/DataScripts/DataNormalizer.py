@@ -7,7 +7,7 @@ from scipy.stats import zscore
 import sys
 sys.path.append("D:/Github/SteamDataProject/Scripts/UtilScripts")
 from Logger import Logger
-
+from DataSaver import save_data
 
 class DataNormalizer:
 	valid_genres = [
@@ -32,26 +32,33 @@ class DataNormalizer:
 		self.logger.log_message("Starting data normalization", 1)
 		self.dataframe = pandas.read_csv(clean_data_read_path)
 		self.drop_unused_field(["Name", "Estimated owners", "Release date", "Categories", "Tags", "Genres", "Average owners", "Supported languages","Days since release",])
-		self.apply_log_scale("Number categories")
-		self.apply_log_scale("Price")
-		self.apply_log_scale("Positive")
-		self.apply_log_scale("Negative")
-		self.apply_log_scale("Number languages")
-		self.apply_log_scale("Average owners per day")
-		self.apply_log_scale("Estimated lifetime owners")
+		self.cast_bool_column_to_int("Windows")
+		self.cast_bool_column_to_int("Mac")
+		self.cast_bool_column_to_int("Linux")
+		self.apply_log_scale("Number categories", 0)
+		self.apply_log_scale("Price", 0.5)
+		self.apply_log_scale("Positive", 1)
+		self.apply_log_scale("Negative", 1)
+		self.apply_log_scale("Number languages", 0)
+		self.apply_log_scale("Average owners per day", 1)
+		self.apply_log_scale("Estimated lifetime owners", 1)
 		self.remap_category_scale("Number tags", 0, 20, 0, 1)
 		self.remap_category_to_z_score("Number tags")
 		self.remap_category_to_one_shot("Main Genre", self.valid_genres)
-		self.save_normalized_data(normalize_data_write_path)
+		save_data(self.dataframe, normalize_data_write_path, 1)
 
 
 	def drop_unused_field(self, unused_fields: list[str]) -> None:
 		self.dataframe = self.dataframe.drop(columns = unused_fields)
 
 
-	def apply_log_scale(self, category: str) -> None:
+	def cast_bool_column_to_int(self, category: str) -> None:
+		self.dataframe[category] = self.dataframe[category].astype(int)
+
+
+	def apply_log_scale(self, category: str, base_value_offset: int) -> None:
 		self.logger.log_message("Applying log scale to category " + category, 2)
-		self.dataframe[category] = self.dataframe[category].apply(lambda x: math.log(x+1))
+		self.dataframe[category] = self.dataframe[category].apply(lambda x: math.log(x+base_value_offset))
 
 
 	def remap_category_scale(self, category: str, old_min: int, old_max:int, new_min:int, new_max:int) -> None:
@@ -83,29 +90,7 @@ class DataNormalizer:
 			index = valid_values.index(genre)
 			
 			for j in range (0, len(valid_values)):
-				one_shot_vectors[j].append(j == index)
+				one_shot_vectors[j].append(int(j == index))
 
 		for j in range(0,len(one_shot_vectors)):
 			self.dataframe[category + " is " + valid_values[j]] = one_shot_vectors[j]
-
-
-	def save_normalized_data(self, write_path:str) -> None:
-		self.logger.log_message("Writting normalized data", 1)
-		self.dataframe.to_csv(
-			path_or_buf=write_path,
-			sep=',',
-			na_rep='',
-			header=True,
-			index=True,
-			index_label=None,
-			mode='w',
-			storage_options={},
-			compression='infer',
-			chunksize=None,
-			date_format=None,
-			doublequote=True,
-			escapechar=None,
-			decimal='.',
-			errors='strict'
-		)
-		self.logger.log_message("Normalized data generated correctly at " + write_path, 1)
