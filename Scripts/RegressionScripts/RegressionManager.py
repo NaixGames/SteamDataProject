@@ -1,12 +1,14 @@
 import pandas
 from LinearRegression import LinearRegression
+from LossDataPlotter import LossDataPlotter
 
 #Params
 data_read_path = "../../Data/shuffled_data.csv"
-print_level = 2
+print_level = 1
+train_model = True
+print_loss = True
 
-
-input_variables = {
+input_variables = [
 	"Price",
 	"Windows",
 	"Mac",
@@ -26,20 +28,23 @@ input_variables = {
 	"Main Genre is Racing",
 	"Main Genre is Sports",
 	"Main Genre is Other",
-}
+]
 
-output_variables = {
-	"Average owners per day",
-	"Estimated lifetime owners",
-}
 
 HyperParams = {
 	"learning_rate" : 0.1,
-	"mini_batch_size": 50,
+	"mini_batch_size": 200,
 	"validation_size_fraction": 0.1,
-	"iteration_steps": 100,
+	"iteration_steps": 10000,
+	"learning_rate_dif_stop" : 0.01,
 }
 
-read_path = "../../Data/shuffled_data.csv"
-dataframe = pandas.read_csv(read_path)
-linear_regression = LinearRegression(dataframe, input_variables, "Average owners per day", HyperParams, 1)
+if train_model:
+	read_path = "../../Data/shuffled_data.csv"
+	dataframe = pandas.read_csv(read_path)
+	linear_regression = LinearRegression(dataframe, input_variables, "Average owners per day", HyperParams, print_level)
+	linear_regression.run_regression()
+
+if print_loss:
+	loss_data_plotter = LossDataPlotter(print_level)
+	loss_data_plotter.plot_loss('training_results.txt')
