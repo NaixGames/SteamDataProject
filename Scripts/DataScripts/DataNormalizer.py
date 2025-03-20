@@ -2,6 +2,7 @@ import numpy
 import pandas
 from datetime import datetime
 import math
+import json
 from scipy.stats import zscore
 
 import sys
@@ -28,8 +29,9 @@ class DataNormalizer:
 		self.logger = Logger(print_level)
 
 
-	def normalize_data(self, clean_data_read_path: str, normalize_data_write_path: str) -> None:
+	def normalize_data(self, clean_data_read_path: str, normalize_data_write_path: str, z_scores_info_output: str) -> None:
 		self.logger.log_message("Starting data normalization", 1)
+		self.z_score_info = {}
 		self.dataframe = pandas.read_csv(clean_data_read_path)
 		self.drop_unused_field(["Name", "Estimated owners", "Release date", "Categories", "Tags", "Genres", "Average owners", "Supported languages","Days since release",])
 		self.cast_bool_column_to_int("Windows")
@@ -45,6 +47,8 @@ class DataNormalizer:
 		self.remap_category_scale("Number tags", 0, 20, 0, 1)
 		self.remap_category_to_z_score("Number tags")
 		self.remap_category_to_one_shot("Main Genre", self.valid_genres)
+
+		self.save_z_score_info(z_scores_info_output)
 		save_data(self.dataframe, normalize_data_write_path, 1)
 
 
@@ -68,6 +72,11 @@ class DataNormalizer:
 
 	def remap_category_to_z_score(self, category:str) -> None:
 		self.logger.log_message("Remapping to Z-score category:" + category, 2)
+		cat = self.dataframe[category]
+		cat_info = {}
+		cat_info["mean"] = cat.mean()
+		cat_info["variance"] =  cat.var()
+		self.z_score_info[category] = cat_info
 		self.dataframe[category] = zscore(self.dataframe[category])
 
 
@@ -94,3 +103,8 @@ class DataNormalizer:
 
 		for j in range(0,len(one_shot_vectors)):
 			self.dataframe[category + " is " + valid_values[j]] = one_shot_vectors[j]
+
+
+	def save_z_score_info(self, z_scores_info_output:str) -> None:
+		with open(z_scores_info_output, 'w') as file:  
+			json.dump(self.z_score_info, file, indent=4)

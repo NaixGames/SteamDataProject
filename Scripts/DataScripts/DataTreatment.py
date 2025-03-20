@@ -11,10 +11,10 @@ shuffle_data_write_path = "../../Data/shuffled_data.csv"
 print_level = 2
 generate_clean_data = False
 plot_clean_data = False
-normalized_data = False
+normalized_data = True
 plot_normalized_data = False
 shuffle_data = True
-
+z_scores_info_output = "z_score_output.txt"
 
 if (generate_clean_data):
 	cleaner = DataCleaner(print_level)
@@ -28,7 +28,7 @@ if (plot_clean_data):
 
 if (normalized_data):
 	normalizer = DataNormalizer(print_level)
-	normalizer.normalize_data(clean_data_write_path, normalized_data_write_path)
+	normalizer.normalize_data(clean_data_write_path, normalized_data_write_path, z_scores_info_output)
 
 
 if (plot_normalized_data):

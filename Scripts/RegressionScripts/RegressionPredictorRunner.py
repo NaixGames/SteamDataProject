@@ -92,4 +92,4 @@ yooka_input_values = {
 }
 
 regresssion_predictor = RegressionPredictor(1)
-regresssion_predictor.predict_result(slay_input_values, 'training_results.txt')
+regresssion_predictor.predict_result(slay_input_values, 'training_results.txt', "D:\Github\SteamDataProject\Scripts\DataScripts\z_score_output.txt")

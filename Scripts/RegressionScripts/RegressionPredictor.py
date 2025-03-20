@@ -13,10 +13,10 @@ class RegressionPredictor:
 		self.logger = Logger(print_level)
 
 
-	def predict_result(self, input: dict[str, float], train_data_path: str) -> float:
+	def predict_result(self, input: dict[str, float], train_data_path: str, z_score_info_path: str) -> float:
 		#Should run a thing that validate that input actually aligns with the ones in the stored data ... eventually ...
 
-		self.transform_input_values(input)
+		self.transform_input_values(input, z_score_info_path)
 
 		with open(train_data_path) as json_data:
 			data = json.load(json_data)
@@ -31,7 +31,7 @@ class RegressionPredictor:
 		print(self.transform_output_value(result))
 
 
-	def transform_input_values(self, input: dict[str, float]) -> None:
+	def transform_input_values(self, input: dict[str, float], z_score_info_path: str) -> None:
 		self.normalized_input = input.copy()
 	
 
@@ -41,7 +41,7 @@ class RegressionPredictor:
 		self.apply_log_scale("Negative", 1)
 		self.apply_log_scale("Number languages", 0)
 		self.remap_category_scale("Number tags", 0, 20, 0, 1)
-		self.remap_category_to_z_score("Number tags")
+		self.remap_category_to_z_score("Number tags", z_score_info_path)
 
 
 	def apply_log_scale(self, category: str, base_value_offset: int) -> float:
@@ -53,14 +53,16 @@ class RegressionPredictor:
 		self.normalized_input[category] = (self.normalized_input[category] -old_min)*(new_max-new_min)/(old_max- old_min) + new_min
 
 
-	def remap_category_to_z_score(self, category:str, ) -> float:
+	def remap_category_to_z_score(self, category:str, z_score_info_path: str) -> float:
 		#I should find a better way of doing this than just reading the original value to get the mean and variance.
 		self.logger.log_message("Remapping scale to category " + category, 2)
 
-		dataframe = pandas.read_csv("../../Data/cleaned_data.csv")
-		category_column = dataframe[category]
-		mean = category_column.mean()
-		deviation = math.sqrt(category_column.var())
+		with open(z_score_info_path) as json_data:
+			z_score_data = json.load(json_data)
+			json_data.close()
+
+		mean = z_score_data[category]["mean"]
+		deviation = math.sqrt(z_score_data[category]["variance"])
 
 		self.normalized_input[category] = (self.normalized_input[category]-mean)/deviation
 
