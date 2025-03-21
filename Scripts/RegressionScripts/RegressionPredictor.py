@@ -13,7 +13,7 @@ class RegressionPredictor:
 		self.logger = Logger(print_level)
 
 
-	def predict_result(self, input: dict[str, float], train_data_path: str, z_score_info_path: str) -> float:
+	def predict_result(self, input: dict[str, float], correction_factor: float, train_data_path: str, z_score_info_path: str) -> float:
 		#Should run a thing that validate that input actually aligns with the ones in the stored data ... eventually ...
 
 		self.transform_input_values(input, z_score_info_path)
@@ -28,7 +28,7 @@ class RegressionPredictor:
 		for key in input:
 			result += self.normalized_input[key]*weight_values[key + " weight"]
 
-		print(self.transform_output_value(result))
+		print(correction_factor*self.transform_output_value(result))
 
 
 	def transform_input_values(self, input: dict[str, float], z_score_info_path: str) -> None:
@@ -41,7 +41,6 @@ class RegressionPredictor:
 		self.apply_log_scale("Negative", 1)
 		self.apply_log_scale("Number languages", 0)
 		self.remap_category_scale("Number tags", 0, 20, 0, 1)
-		self.remap_category_to_z_score("Number tags", z_score_info_path)
 
 
 	def apply_log_scale(self, category: str, base_value_offset: int) -> float:

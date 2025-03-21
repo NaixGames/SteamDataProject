@@ -79,8 +79,6 @@ First, we make some changes of variable so training is less sensible to scale. T
 First note that both our predicted outputs have a pretty obvious power law. Hence, we will change them to a log scale before making predictions. The same applies to Prices, Positive and negative reviews.
 The number of categories follows a power law distribution (ignoring values with only 1 category). I will adjust them to log scale. The number of languages follows a power-law distribution, with some outliers at 29 and 103 (most likely automatic filling of some languages / obvious limit set by translation companies). Again, we take the log of these numbers. 
 
-The number of genres follows a Gaussian-ish distribution, so we normalize them by replacing them with their Z-score.
-
 The number of tags, funny enough, follows a distribution bounded between 1 and 20, with a pretty heavyweight to 20. I will re-adjust them to 0 to 1.
 
 The genre is remapped to a one-shot vector.

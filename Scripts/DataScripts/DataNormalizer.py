@@ -45,7 +45,7 @@ class DataNormalizer:
 		self.apply_log_scale("Average owners per day", 1)
 		self.apply_log_scale("Estimated lifetime owners", 1)
 		self.remap_category_scale("Number tags", 0, 20, 0, 1)
-		self.remap_category_to_z_score("Number tags")
+		self.remap_category_to_z_score("Number genres")
 		self.remap_category_to_one_shot("Main Genre", self.valid_genres)
 
 		self.save_z_score_info(z_scores_info_output)
