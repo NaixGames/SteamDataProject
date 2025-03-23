@@ -1,4 +1,8 @@
 {
+    "Estimated lifetime owners": {
+        "old_min": 0.0,
+        "old_max": 20.53524441566246
+    },
     "Number genres": {
         "mean": 2.7922167111789395,
         "variance": 1.7685596844124123

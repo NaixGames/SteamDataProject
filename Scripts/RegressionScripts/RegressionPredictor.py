@@ -13,7 +13,7 @@ class RegressionPredictor:
 		self.logger = Logger(print_level)
 
 
-	def predict_result(self, input: dict[str, float], correction_factor: float, train_data_path: str, z_score_info_path: str) -> float:
+	def predict_result(self, input: dict[str, float], train_data_path: str, z_score_info_path: str) -> float:
 		#Should run a thing that validate that input actually aligns with the ones in the stored data ... eventually ...
 
 		self.transform_input_values(input, z_score_info_path)
@@ -28,7 +28,8 @@ class RegressionPredictor:
 		for key in input:
 			result += self.normalized_input[key]*weight_values[key + " weight"]
 
-		print(correction_factor*self.transform_output_value(result))
+		return result
+		
 
 
 	def transform_input_values(self, input: dict[str, float], z_score_info_path: str) -> None:
@@ -50,6 +51,16 @@ class RegressionPredictor:
 	def remap_category_scale(self, category: str, old_min: int, old_max:int, new_min:int, new_max:int) -> float:
 		self.logger.log_message("Remapping scale to category " + category, 2)
 		self.normalized_input[category] = (self.normalized_input[category] -old_min)*(new_max-new_min)/(old_max- old_min) + new_min
+
+
+	def remap_category_from_min_max(self, category: str, info_path: str) -> None:
+		self.logger.log_message("Remapping scale to category " + category, 2)
+
+		with open(info_path) as json_data:
+			z_score_data = json.load(json_data)
+			json_data.close()
+
+		self.remap_category_scale(json_data["min"], json_data["max"], 0, 1)
 
 
 	def remap_category_to_z_score(self, category:str, z_score_info_path: str) -> float:

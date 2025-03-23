@@ -252,7 +252,8 @@ class DataCleaner:
 		estimated_total_owners = []
 
 		for i in range(0, len(days_release)):
-			distribution_factor = 1-days_release[i]**(-pareto_degree)
+			days = max(days_release[i], 7) #Use one week as a starting point; data is quite noisy the first days and allegedly it stabilizes on a week. 
+			distribution_factor = 1-(1/days)**(pareto_degree)
 			distribution_factor = max(distribution_factor, pareto_degree)
 			estimation = average_owners[i]/distribution_factor
 			estimated_total_owners.append(estimation)

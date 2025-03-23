@@ -14,7 +14,7 @@ plot_clean_data = False
 normalized_data = True
 plot_normalized_data = False
 shuffle_data = True
-z_scores_info_output = "z_score_output.txt"
+z_scores_info_output = "category_info.txt"
 
 if (generate_clean_data):
 	cleaner = DataCleaner(print_level)

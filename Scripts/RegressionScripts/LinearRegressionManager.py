@@ -35,14 +35,14 @@ HyperParams = {
 	"learning_rate" : 0.01,
 	"mini_batch_size": 250,
 	"validation_size_fraction": 0.1,
-	"iteration_steps": 1000,
+	"iteration_steps": 2000,
 	"learning_rate_dif_stop" : 0.001,
 }
 
 if train_model:
 	dataframe = pandas.read_csv(data_read_path)
-	linear_regression = LinearRegression(dataframe, input_variables, "Average owners per day", HyperParams, print_level)
-	#linear_regression = LinearRegression(dataframe, input_variables, "Estimated lifetime owners", HyperParams, print_level)
+	#linear_regression = LinearRegression(dataframe, input_variables, "Average owners per day", HyperParams, print_level)
+	linear_regression = LinearRegression(dataframe, input_variables, "Estimated lifetime owners", HyperParams, print_level)
 	linear_regression.run_regression()
 
 if print_loss:
