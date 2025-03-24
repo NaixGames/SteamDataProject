@@ -1,27 +1,15 @@
 # SteamDataProject - Summary
 
-This is a project to try to do some statistical analysis on Steam to try to predict which factors affect Steam sales. 
+This is a project to try to do some statistical analysis on Steam to try to predict which factors affect Steam sales. This actually started motivated by the myth "Mac support does not translate into better sales" in GameDev,
+but wanted to see what else I could learn.
 
-Some particular questions that motivated me to do this
-
-- Which factors readily available help predict a game's sales?
-
-- Does Mac support matter for Steam sales?
-
-- Does the number of genres matter for a Steam sale? Do the number of tags?
-
-- Does supporting more languages cause any significant difference in sales?
+TLDR: Mac support does indeed does not support Steam sales, Action and Casual games sell better than any other genre.
 
 # Disclaimer
 
 As a disclaimer, do not take everything you see here at face value or as a factual truth. 
 
 This is mostly done for my entertainment, and so I implemented almost everything from scratch. I do not plan to change that.
-
-
-# SteamDataProject - Summary
-
-In what follows you can see the process in which I arrive at those answers.
 
 
 # Data and data cleaning
@@ -66,11 +54,9 @@ for games that have been on sale for more time. To account for this I added;
 
 - The number of days since the game was released
 - The average owners per day. That is, we divide the number of estimated owners by the number of days since the game was released. This is akin to a "custom acquisition rate"
-- An estimated total lifetime owners. For this, we assume that sales during lifetime follow a Pareto distribution (which is true for the majority of games) and we
-use the rule of thumb that a game will have total sales in a year of 3 times what it did in its first week ( https://newsletter.gamediscover.co/p/data-deep-dive-whats-the-long-tail ).
-With this can write the Pareto explicitly, and use that to predict the game's total owners.
 
-The last two fields are what we will consider the "output" of our prediction models.
+
+The two field is what we will consider the "output" of our prediction models.
 
 # Data normalization
 
@@ -85,17 +71,35 @@ The genre is remapped to a one-shot vector.
 
 # Linear regression
 
-We perform two linear regression by doing simple machine-learning algorithms.
+We perform a linear regression by doing simple machine-learning algorithms. From this I got a model that predicted pretty well the owners of some games (although your millage may vary).
 
+By looking at the training weights some interesting things can be deduced:
+
+1.- Action and Casual genres are what sell best. I see this as splitting the "hardcore" audience (mostly focussed on action games) and the more casual one in the second group. Everything else is more niche when compared to this other groups.
+
+2.- Number of categories and number of tags have a noticeable effect of predicted sales. I expect there is a correlation with games with more budgets (which then tend to perform better) and game with more features, so I expect this is showing this correlation, somehow.
+
+3.- Positive and negative reviews both have a good impact in sales; however this is just showing that when a game sells better it gets more reviews; both positive and negative ones. What is really interesting here is that positive ones DO have a much higher impact in owners than negative ones (which is much more expected). 
+
+4.- Both Mac and Linux support seems to have little to no weight on owners (and this is expanded on next section).
+
+While other conclusion could be obtained from this, I believe they would be tainted by the fact we are doing a linear model (and not a more sophisticated one).
 
 # Hypothesis testing
+
+As mentioned before, what really motivated this was the question of whatever Mac support reflects on better sell of games. What I managed to get with this analysis, by doing a t-student test, is that there is absolutely no evidence giving native Mac support provides a boost in game owners (in fact, the p-value of test was so low that python approximated it as plain 0). Same thing happens with Linux.
+
+# Neural Network model
+
+After doing the Linear model I obtained an way to compute approximately the owners of games of steam, which while it performed well it didn't perform TOO well. This is not as surprising; it is certainly not capturing correctly many factors that came into play when players decide which games to buy. For example; I do not expect owners
+translate linearly to price, but rather like a parabola (in which price is used a proxy for "quality" from a certain point).
+
+
+
 
 # The future?
 
 To improve this analysis in the future I plan to do the following:
-
-- Use a neural network for the estimation. I think this should help capture better the self-interaction between
-different data fields (for example, differences between different genre play-base).
 
 
 - Use my own data scrapper. While the data we used contained a bunch of information, it also contains a large number
@@ -105,22 +109,7 @@ of data not filled correctly (in particular, estimated owners for a big number o
 
 - Get a better genre classification. Steam one is barebones at best.
 
-
 - Include other fields for my analysis. Does the number of screenshots and movies affect the sales? I would say they do,
 but companies that can include more screenshots and trailers tend to have a bigger marketing team, hence more budget for marketing,
 and I feel afraid to let that into the analysis without looking at possible correlations with other factors.
 
-
-# TO-DO
-
-- Do linear regression for a first model
-
-- Investigate how the linear regression model can be improved
-
-- Check if we can do some neural networks to improve the estimation
-
-- Test if having the "indie" label cause any statistical significance.
-
-- Test if having Mac support cause any statistical significance lmao.
-
-- Write my own data scrapper.
