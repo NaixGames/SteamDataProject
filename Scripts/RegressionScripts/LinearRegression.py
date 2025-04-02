@@ -107,7 +107,7 @@ class LinearRegression:
 		index_val = self.compute_dif_at_index(index_data)
 		return index_val*index_val / self.hyperparams["mini_batch_size"]
 	
-
+	#could cache this value btw ...
 	def compute_dif_at_index(self, index_data: int) -> float:
 		index_val = self.weights_map["bias"]
 		for i in range(0, self.num_inputs):

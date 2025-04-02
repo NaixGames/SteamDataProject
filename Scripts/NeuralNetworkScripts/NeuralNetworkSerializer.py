@@ -63,9 +63,11 @@ class NeuralNetworkSerializer:
 
 		network = NeuralNetwork(number_inputs, hidden_layer, depths, activation_functions)
 
+		index = 0
 		for i in range (0, len(network.Nodes)):
 			for j in range(0, len(network.Nodes[i])):
-				network.Nodes[i][j].weights = numpy.array(stored_data["weights"][i+j], dtype = 'float32')
+				network.Nodes[i][j].weights = numpy.array(stored_data["weights"][index], dtype = 'float32')
+				index += 1
 
 
 		return network
